@@ -140,7 +140,7 @@ function createdomain($conn, $domainname, $registrant, $admincontact, $techconta
                 $domain->addHost($host);
             }
         }
-        $create = new Metaregistrar\EPP\eppCreateDomainRequest($domain, true);
+        $create = new Metaregistrar\EPP\eppCreateDomainRequest($domain);
         if ((($response = $conn->writeandread($create)) instanceof Metaregistrar\EPP\eppCreateResponse) && ($response->Success())) {
             /* @var $response Metaregistrar\EPP\eppCreateResponse */
             echo "Domain " . $response->getDomainName() . " created on " . $response->getDomainCreateDate() . ", expiration date is " . $response->getDomainExpirationDate() . "\n";
