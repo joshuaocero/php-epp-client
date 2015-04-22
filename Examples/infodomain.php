@@ -1,5 +1,5 @@
 <?php
-require('../autoloader.php');
+//require('../autoloader.php');
 
 /*
  * This script checks for the availability of domain names
@@ -8,7 +8,7 @@ require('../autoloader.php');
  */
 
 
-if ($argc <= 1) {
+/*if ($argc <= 1) {
     echo "Usage: infodomain.php <domainname>\n";
     echo "Please enter a domain name retrieve\n\n";
     die();
@@ -32,33 +32,38 @@ try {
 } catch (Metaregistrar\EPP\eppException $e) {
     echo "ERROR: " . $e->getMessage() . "\n\n";
 }
-
+*/
 
 function infodomain($conn, $domainname) {
     try {
         $epp = new Metaregistrar\EPP\eppDomain($domainname);
         $info = new Metaregistrar\EPP\eppInfoDomainRequest($epp);
         if ((($response = $conn->writeandread($info)) instanceof Metaregistrar\EPP\eppInfoDomainResponse) && ($response->Success())) {
-            /* @var $response Metaregistrar\EPP\eppInfoDomainResponse */
+            /* @var $response Metaregistrar\EPP\eppInfoDomainResponse */        	
+        	$returnmsg = "<p><ul>";
             $d = $response->getDomain();
-            echo "Info domain for " . $d->getDomainname() . ":\n";
-            echo "Created on " . $response->getDomainCreateDate() . "\n";
+            $returnmsg = $returnmsg . "Info domain for " . $d->getDomainname();
+            $returnmsg = $returnmsg . "<li>Created on " . $response->getDomainCreateDate() . "</li>";
             //echo "Last update on ".$response->getDomainUpdateDate()."\n";
-            echo "Registrant " . $d->getRegistrant() . "\n";
-            echo "Contact info:\n";
+            $returnmsg = $returnmsg . "<li>Registrant " . $d->getRegistrant() . "</li>";
+            $returnmsg = $returnmsg . "<li>Contact info:<br>";
             foreach ($d->getContacts() as $contact) {
-                echo "  " . $contact->getContactType() . ": " . $contact->getContactHandle() . "\n";
+                $returnmsg = $returnmsg . "  " . $contact->getContactType() . ": " . $contact->getContactHandle() . "<br>";
             }
-            echo "Nameserver info:\n";
+            $returnmsg = $returnmsg . "</li>";
+            $returnmsg = $returnmsg . "<li>Nameserver info: <br>";
             foreach ($d->getHosts() as $nameserver) {
-                echo "  " . $nameserver->getHostName() . "\n";
+                $returnmsg = $returnmsg . "  " . $nameserver->getHostName() . "<br>";
             }
-
+            $returnmsg = $returnmsg . "</li>";
+            $returnmsg = $returnmsg . "</ul></p>";
+            
+            return $returnmsg;
         } else {
-            echo "ERROR2\n";
+            return "ERROR2";
         }
     } catch (Metaregistrar\EPP\eppException $e) {
-        echo 'ERROR1';
-        echo $e->getMessage() . "\n";
+        // echo 'ERROR1';
+        return $e->getMessage() . "<br>";
     }
 }

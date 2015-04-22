@@ -1,5 +1,5 @@
 <?php
-require('../autoloader.php');
+// require('../autoloader.php');
 
 /*
  * This sample script renews a domain name within your account
@@ -8,7 +8,7 @@ require('../autoloader.php');
  *
  */
 
-if ($argc <= 3) 
+/* if ($argc <= 3) 
 {
     echo "Usage: renewdomain.php <domainname> <expirydate> <no_of_years>\n";
     echo "Please enter the domain name to be renewed\n\n";
@@ -28,7 +28,7 @@ if ($conn->connect()) {
         renewdomain($conn, $domainname, $expirydate, $no_of_years);
         logout($conn);
     }
-}
+} */
 
 function renewdomain($conn, $domainname, $expirydate, $no_of_years) {
     try {
@@ -39,12 +39,13 @@ function renewdomain($conn, $domainname, $expirydate, $no_of_years) {
 
         if ((($response = $conn->writeandread($renew)) instanceof Metaregistrar\EPP\eppRenewResponse) && ($response->Success())) {
             /* @var $response Metaregistrar\EPP\eppRenewResponse */
-            echo "Domain " . $response->getDomainName() . " renewed, expiration date is " . $response->getDomainExpirationDate() . "\n";
+            $retval = "Domain " . $response->getDomainName() . " renewed, expiration date is " . $response->getDomainExpirationDate() . "\n";
+            return array('message' => $retval, 'status' => true, 'response' => $response);
         } else {
-            echo "Failed to renew domain\n";
+            return array('message' => "Failed to renew domain<br>", 'status' => false);
         }
     } catch (Metaregistrar\EPP\eppException $e) {
-        echo $e->getMessage() . "\n";
+        return array('message' => $e->getMessage() . "<br>", 'status' => false);
     }
 }
 ?>

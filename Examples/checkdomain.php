@@ -1,5 +1,5 @@
 <?php
-require('../autoloader.php');
+// require('../autoloader.php');
 
 /*
  * This script checks for the availability of domain names
@@ -7,7 +7,7 @@ require('../autoloader.php');
  */
 
 
-if ($argc <= 1) {
+/*if ($argc <= 1) {
     echo "Usage: checkdomain.php <domainnames>\n";
     echo "Please enter one or more domain names to check\n\n";
     die();
@@ -33,6 +33,7 @@ try {
     echo "ERROR: " . $e->getMessage() . "\n\n";
 }
 
+*/ 
 
 function checkdomains($conn, $domains) {
     try {
@@ -41,13 +42,12 @@ function checkdomains($conn, $domains) {
             $checks = $response->getCheckedDomains();
 
             foreach ($checks as $check) {
-                echo $check['domainname'] . " is " . ($check['available'] ? 'free' : 'taken') . " (" . $check['reason'] . ")\n";
+                return $check['domainname'] . " is " . ($check['available'] ? 'free' : 'taken') . " (" . $check['reason'] . ")\n";
             }
         } else {
-            echo "ERROR2\n";
+            return "Failed to check domain";
         }
-    } catch (Metaregistrar\EPP\eppException $e) {
-        echo 'ERROR1';
-        echo $e->getMessage() . "\n";
+    } catch (Metaregistrar\EPP\eppException $e) {        
+        return $e->getMessage() . "\n";
     }
 }
