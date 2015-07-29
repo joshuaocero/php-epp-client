@@ -1,7 +1,7 @@
 <?php
 // Base EPP commands: hello, login and logout
 date_default_timezone_set('UTC');
-require_once('Examples/base.php');
+require_once('Lib/base.php');
 
 function autoloadData($className) {
 
